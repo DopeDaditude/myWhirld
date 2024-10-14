@@ -10,13 +10,11 @@ function Earth({
   onSpinComplete,
   setCurrentLookAt,
   setCurrentRotation,
-  onDoubleClick,
 }: {
   isSpinning: boolean
   onSpinComplete: () => void
   setCurrentLookAt: (position: THREE.Vector3) => void
   setCurrentRotation: (rotation: number) => void
-  onDoubleClick: (event: THREE.Event) => void
 }) {
   const earthRef = useRef<THREE.Mesh>(null)
   const groupRef = useRef<THREE.Group>(null)
@@ -57,7 +55,7 @@ function Earth({
 
   return (
     <group ref={groupRef}>
-      <mesh ref={earthRef} onDoubleClick={onDoubleClick}>
+      <mesh ref={earthRef}>
         <sphereGeometry args={[earthRadius, 64, 64]} />
         <meshPhongMaterial
           map={colorMap}
@@ -109,7 +107,6 @@ export default function MyWhirld() {
   const [isSpinning, setIsSpinning] = useState(false)
   const [currentLookAt, setCurrentLookAt] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, -2))
   const [currentRotation, setCurrentRotation] = useState(0)
-  const [showGlobeInfo, setShowGlobeInfo] = useState(false)
   const [cameraPosition, setCameraPosition] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 6))
 
   const handleExplore = () => {
@@ -118,14 +115,6 @@ export default function MyWhirld() {
 
   const handleSpinComplete = () => {
     setIsSpinning(false)
-  }
-
-  const handleDoubleClick = (event: THREE.Event) => {
-    if (event.nativeEvent) {
-      event.nativeEvent.stopPropagation()
-    }
-    setShowGlobeInfo(true)
-    setTimeout(() => setShowGlobeInfo(false), 3000) // Hide after 3 seconds
   }
 
   return (
@@ -140,7 +129,6 @@ export default function MyWhirld() {
             onSpinComplete={handleSpinComplete}
             setCurrentLookAt={setCurrentLookAt}
             setCurrentRotation={setCurrentRotation}
-            onDoubleClick={handleDoubleClick}
           />
         </Suspense>
         <OrbitControls
@@ -154,7 +142,6 @@ export default function MyWhirld() {
           }}
         />
       </Canvas>
-      {showGlobeInfo && <GlobeInfo position={currentLookAt} rotation={currentRotation} cameraPosition={cameraPosition} />}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center">
         <button
           onClick={handleExplore}
