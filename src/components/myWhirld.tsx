@@ -121,7 +121,9 @@ export default function MyWhirld() {
   }
 
   const handleDoubleClick = (event: THREE.Event) => {
-    event.stopPropagation()
+    if (event.nativeEvent) {
+      event.nativeEvent.stopPropagation()
+    }
     setShowGlobeInfo(true)
     setTimeout(() => setShowGlobeInfo(false), 3000) // Hide after 3 seconds
   }
@@ -146,8 +148,8 @@ export default function MyWhirld() {
           enablePan={true}
           enableRotate={true}
           onChange={(e) => {
-            if (e.target.object instanceof THREE.PerspectiveCamera) {
-              setCameraPosition(e.target.object.position)
+            if (e.target instanceof THREE.PerspectiveCamera) {
+              setCameraPosition(e.target.position)
             }
           }}
         />
