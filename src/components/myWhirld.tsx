@@ -1,8 +1,9 @@
+
 'use client'
 
-import React, { useRef, useState, useEffect, Suspense } from 'react'
+import React, { useRef, useState, Suspense } from 'react'
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
-import { OrbitControls, useTexture } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 
 function Earth({
@@ -18,16 +19,12 @@ function Earth({
 }) {
   const earthRef = useRef<THREE.Mesh>(null)
   const groupRef = useRef<THREE.Group>(null)
-  const [colorMap, bumpMap, specularMap] = useLoader(THREE.TextureLoader, [
-    'https://unpkg.com/three-globe@2.24.13/example/img/earth-blue-marble.jpg',
-    'https://unpkg.com/three-globe@2.24.13/example/img/earth-topology.png',
-    'https://unpkg.com/three-globe@2.24.13/example/img/earth-water.png'
+  const [colorMap] = useLoader(THREE.TextureLoader, [
+    'https://unpkg.com/three-globe@2.24.13/example/img/earth-blue-marble.jpg'
   ])
   const [spinProgress, setSpinProgress] = useState(0)
-  const { camera } = useThree()
 
-  const earthRadius = 2
-  const cameraDistance = 6
+  const earthRadius = 1
 
   useFrame((state, delta) => {
     if (groupRef.current) {
@@ -57,14 +54,7 @@ function Earth({
     <group ref={groupRef}>
       <mesh ref={earthRef}>
         <sphereGeometry args={[earthRadius, 64, 64]} />
-        <meshPhongMaterial
-          map={colorMap}
-          bumpMap={bumpMap}
-          bumpScale={0.05}
-          specularMap={specularMap}
-          specular={new THREE.Color('grey')}
-          shininess={5}
-        />
+        <meshBasicMaterial map={colorMap} />
       </mesh>
     </group>
   )
@@ -80,34 +70,11 @@ function Background() {
   )
 }
 
-function GlobeInfo({ position, rotation, cameraPosition }: { position: THREE.Vector3, rotation: number, cameraPosition: THREE.Vector3 }) {
-  const lat = 90 - THREE.MathUtils.radToDeg(Math.acos(position.y / 2))
-  const lon = THREE.MathUtils.radToDeg(Math.atan2(position.x, position.z))
-
-  return (
-    <div className="absolute top-4 left-4 bg-white bg-opacity-80 p-2 rounded-lg shadow-lg">
-      <h3 className="text-sm font-bold text-gray-800">Globe Information</h3>
-      <p className="text-xs text-gray-600">
-        Latitude: {lat.toFixed(2)}°, Longitude: {lon.toFixed(2)}°
-      </p>
-      <p className="text-xs text-gray-600">
-        Rotation: {rotation.toFixed(2)} rad
-      </p>
-      <p className="text-xs text-gray-600">
-        Camera Position: 
-        X: {cameraPosition.x.toFixed(2)}, 
-        Y: {cameraPosition.y.toFixed(2)}, 
-        Z: {cameraPosition.z.toFixed(2)}
-      </p>
-    </div>
-  )
-}
-
 export default function MyWhirld() {
   const [isSpinning, setIsSpinning] = useState(false)
-  const [currentLookAt, setCurrentLookAt] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, -2))
+  const [currentLookAt, setCurrentLookAt] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, -1))
   const [currentRotation, setCurrentRotation] = useState(0)
-  const [cameraPosition, setCameraPosition] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 6))
+  const [cameraPosition, setCameraPosition] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 3))
 
   const handleExplore = () => {
     setIsSpinning(true)
@@ -118,10 +85,8 @@ export default function MyWhirld() {
   }
 
   return (
-    <div className="w-full h-screen relative bg-gray-900">
-      <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
+    <div className="w-full h-screen">
+      <Canvas camera={{ position: [0, 0, 3], fov: 45 }}>
         <Suspense fallback={null}>
           <Background />
           <Earth
