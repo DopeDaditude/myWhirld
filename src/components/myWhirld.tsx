@@ -1,7 +1,6 @@
-
 'use client'
 
-import React, { useRef, useState, Suspense } from 'react'
+import React, { useRef, useState, Suspense, useEffect } from 'react'
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
@@ -84,8 +83,21 @@ export default function MyWhirld() {
     setIsSpinning(false)
   }
 
+  useEffect(() => {
+    const handleResize = () => {
+      document.body.style.height = `${window.innerHeight}px`
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
   return (
-    <div className="w-full h-screen">
+    <div className="fixed inset-0 overflow-hidden">
       <Canvas camera={{ position: [0, 0, 3], fov: 45 }}>
         <Suspense fallback={null}>
           <Background />
