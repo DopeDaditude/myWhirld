@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 
-const MyWhirld = dynamic(() => import('@/components/MyWhirld'), { ssr: false })
+const MyWhirld = dynamic(() => import('@/components/myWhirld'), { ssr: false })
 
 export default function Home() {
   return (
