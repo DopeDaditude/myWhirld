@@ -136,7 +136,7 @@ export default function MyWhirld() {
           enablePan={true}
           enableRotate={true}
           onChange={(e) => {
-            if (e.target instanceof THREE.PerspectiveCamera) {
+            if (e && e.target instanceof THREE.PerspectiveCamera) {
               setCameraPosition(e.target.position)
             }
           }}
